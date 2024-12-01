@@ -77,6 +77,7 @@ def main():
                     sock.sendto(message.encode(), (next_player_host, next_player_port))
                 else:
                     local_bets = []
+                    print("Você é o dealer")
                     print(f"Faça sua aposta, você tem: {my_player.chips} fichas")
                     my_player.ask_bet()
 
