@@ -18,7 +18,9 @@ class Deck:
         return [self.draw() for _ in range(n)]
        
     def draw_hands(self, n):
-        return [self.draw_hand(NUMBER_OF_CARDS) for _ in range(n)]
+        hands = [self.draw_hand(NUMBER_OF_CARDS) for _ in range(n)]
+        remaining_cards = self.to_list()
+        return hands, remaining_cards
         
     def reset_deck(self):
         self.deck = [Card(suit, rank) for suit in Card.suits for rank in Card.ranks]

@@ -1,5 +1,3 @@
-from .deck import Deck
-
 class Player:
     def __init__(self, id):
         self.id = id
@@ -30,39 +28,36 @@ class Player:
     def is_alive(self):
         return self.chips > 0
     
-    def ask_play(self, deck: Deck):
+    def ask_play(self, deck):
         while True:
             # Calcula e exibe a soma da pontuação do jogador
             score = self.calculate_score()
-            print(f"Sua mão: {self.show_hand()} | Pontuação: {score}")
-            print(f"{deck[0]}")
-            print(f"{deck[1]}")
-            print(f"{deck[2]}")
-            
+            print(f"Sua mão: {self.show_hand()} | Pontuação: {score}")            
             # Verifica se o jogador ultrapassou 21 pontos
             if score > 21:
                 print("Você ultrapassou 21!")
-                return
+                return deck
+            
+            if score == 21:
+                print("Você tem um blackjack!")
+                return deck
 
             # Pergunta ao jogador se ele deseja continuar pedindo cartas ou parar
             choice = input("Deseja pedir mais uma carta? (s para sim, n para não): ").strip().lower()
 
             if choice == 's':
-                # O jogador escolheu pedir uma carta (hit)
                 if deck:
-                    card = deck.draw()  # Retira uma carta do deck
-                    self.hand.append(card)  # Adiciona a carta à mão do jogador
+                    card = deck.pop()
+                    self.hand.append(card)
                     print(f"Você puxou a carta: {card}.")
                 else:
                     print("O deck está vazio!")
-                return 'hit'
+                continue
             elif choice == 'n':
-                # O jogador escolheu parar (stand)
                 print(f"Você decidiu parar com {score} pontos.")
-                return 'stand'
+                return deck
             else:
                 print("Escolha inválida. Digite 's' para sim ou 'n' para não.")
-
     
     def calculate_score(self) -> int:
         score = sum(card.value() for card in self.hand)
@@ -80,6 +75,17 @@ class Player:
         elif player_score == dealer_score:
             return "EMPATOU"
         return "PERDEU"
+    
+    def calculate_chips(self, score):
+        if score == "GANHOU":
+            self.chips = self.chips + (self.bet / 2)
+            print(f"Você ganhou {self.bet / 2} fichas, sua aposta era: {self.bet} fichas, total: {self.chips} fichas")
+        if score == "EMPATOU":
+            self.chips = self.chips - (self.bet / 2)
+            print(f"Você perdeu {self.bet / 2} fichas, sua aposta era: {self.bet} fichas, total: {self.chips} fichas")
+        if score == "PERDEU":
+            self.chips = self.chips - self.bet
+            print(f"Você perdeu {self.bet} fichas, sua aposta era: {self.bet} fichas, total: {self.chips} fichas")            
 
     def __repr__(self):
         return f"player({self.name}, hand: {self.show_hand()})"
