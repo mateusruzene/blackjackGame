@@ -5,7 +5,7 @@ Este é um jogo de Blackjack para 4 jogadores implementado em Python, utilizando
 ---
 ## **Alunos**
 #### Mateus Siqueira Ruzene -> GRR:20221223
-#### Matheus Morais Piovesan -> GRR:2022
+#### Matheus Moraes Piovesan -> GRR:20224383
 
 ## 🎯 **Visão Geral**
 
