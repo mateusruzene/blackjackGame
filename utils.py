@@ -15,7 +15,7 @@ def get_ports(config, index):
 # Lê o arquivo de configuração, separando por index, porta e host de cada usuário
 def read_config():
     config = {}
-    config_file_path = os.path.join(os.path.dirname(__file__), '..', 'config.txt')
+    config_file_path = os.path.join(os.path.dirname(__file__), '..', 'players.txt')
     with open(config_file_path, 'r') as file:
         for line in file:
             parts = line.split()

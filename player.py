@@ -78,10 +78,10 @@ class Player:
     
     def calculate_chips(self, score):
         if score == "GANHOU":
-            self.chips = self.chips + (self.bet / 2)
+            self.chips = self.chips + round(self.bet / 2)
             print(f"Você ganhou {self.bet / 2} fichas, sua aposta era: {self.bet} fichas, total: {self.chips} fichas")
         if score == "EMPATOU":
-            self.chips = self.chips - (self.bet / 2)
+            self.chips = self.chips - round(self.bet / 2)
             print(f"Você perdeu {self.bet / 2} fichas, sua aposta era: {self.bet} fichas, total: {self.chips} fichas")
         if score == "PERDEU":
             self.chips = self.chips - self.bet

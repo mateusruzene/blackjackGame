@@ -2,15 +2,22 @@ import json
 from .deck import Deck
 from .card import Card
 from .player import Player
-from .network import setup_socket
 from .utils import get_ports, read_config
+import socket
 import sys
 
 
 NUM_OF_PLAYERS = 4
 BASTAO = "BASTAO"
 
-def upsert_bet(bets, player, bet):
+def setup_socket(self_port, host):
+    sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+    addr = (host, self_port)
+    print(f"Binding to {addr}")
+    sock.bind(addr)
+    return sock
+
+def set_bets(bets, player, bet):
     for i in range(len(bets)):
         if bets[i]["player"] == player:
             bets[i]["bet"] = bet
@@ -51,8 +58,8 @@ def main():
         print(f"Faça sua aposta, você tem: {my_player.chips} fichas")
 
         my_player.ask_bet()
-        bets = upsert_bet(bets, my_player.id, my_player.bet)
-        message = json.dumps({"state": "BETTING", "bets": bets})
+        bets = set_bets(bets, my_player.id, my_player.bet)
+        message = json.dumps({"state": "BETTING", "dealer_id": my_player.id, "bets": bets})
         sock.sendto(message.encode(), (next_player_host, next_player_port))  
     
     while True:
@@ -81,22 +88,23 @@ def main():
                     print(f"Faça sua aposta, você tem: {my_player.chips} fichas")
                     my_player.ask_bet()
 
-                    local_bets = upsert_bet(local_bets, my_player.id, my_player.bet)
+                    local_bets = set_bets(local_bets, my_player.id, my_player.bet)
 
-                    message = json.dumps({"state": "BETTING", "bets": local_bets})
+                    message = json.dumps({"state": "BETTING", "dealer_id": my_player.id, "bets": local_bets})
                     sock.sendto(message.encode(), (next_player_host, next_player_port))
                 continue
             else:
                 if my_player.is_alive() == False:
                     sock.sendto(data, (next_player_host, next_player_port))
                     continue
-                
+                dealer_id = int(pacote["dealer_id"])
+                print(f"O Dealer é o jogador {dealer_id + 1}")
                 print(f"Faça sua aposta, você tem: {my_player.chips} fichas")
                 my_player.ask_bet()
                 bets = pacote["bets"]
-                bets = upsert_bet(bets, my_player.id, my_player.bet)
+                bets = set_bets(bets, my_player.id, my_player.bet)
                 
-                message = json.dumps({"state": "BETTING", "bets": bets})
+                message = json.dumps({"state": "BETTING","dealer_id": dealer_id, "bets": bets})
                 sock.sendto(message.encode(), (next_player_host, next_player_port))
 
         if pacote["state"] == "PLAYING":       
@@ -164,6 +172,7 @@ def main():
                 sock.sendto(message.encode(), (next_player_host, next_player_port))
             else:
                 if my_player.is_alive() == False:
+                    print("Você perdeu todas as fichas!")
                     sock.sendto(data, (next_player_host, next_player_port))
                     continue
                 my_player.bet = 0
