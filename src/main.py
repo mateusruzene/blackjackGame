@@ -7,7 +7,7 @@ import socket
 import sys
 
 
-NUM_OF_PLAYERS = 4
+NUM_OF_PLAYERS = 2
 BASTAO = "BASTAO"
 
 def setup_socket(self_port, host):
