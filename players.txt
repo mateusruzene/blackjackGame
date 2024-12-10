@@ -1,4 +1,2 @@
-0 5001 localhost
-1 5002 localhost
-2 5003 localhost
-3 5004 localhost
+0 5001 10.254.224.51
+1 5002 10.254.224.50
